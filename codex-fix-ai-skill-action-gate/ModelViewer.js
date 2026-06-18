@@ -272513,9 +272513,7 @@ var init_AIDriver = __esmMin((() => {
 					return [
 						entity.ACTION.IDLE,
 						entity.ACTION.WALK,
-						entity.ACTION.READYFIGHT,
 						entity.ACTION.ATTACK,
-						entity.ACTION.ATTACK1,
 						entity.ACTION.ATTACK2,
 						entity.ACTION.ATTACK3
 					].some((action) => action >= 0 && action === entity.action);
