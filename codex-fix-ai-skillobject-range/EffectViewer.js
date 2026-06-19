@@ -272517,7 +272517,7 @@ var init_AIDriver = __esmMin((() => {
 					if (res.length > 3) {
 						if (isHoAI ? AIDriver.HOM_AGGRESSIVE : AIDriver.MER_AGGRESSIVE) {
 							let closest = 0;
-							let lastDist = Math.sqrt(1e3);
+							let lastDist = 32;
 							const thisentity = EntityManager.get(isHoAI ? SessionStorage_default.homunId : SessionStorage_default.mercId);
 							for (const item of res) if (item !== 0 && item !== SessionStorage_default.AID && item !== SessionStorage_default.homunId && item !== SessionStorage_default.mercId) {
 								const entity = EntityManager.get(item);
