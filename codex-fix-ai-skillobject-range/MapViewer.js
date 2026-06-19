@@ -272543,7 +272543,7 @@ var init_AIDriver = __esmMin((() => {
 				function distance(x1, y1, x2, y2) {
 					const dx = x2 - x1;
 					const dy = y2 - y1;
-					return dx * dx + dy * dy;
+					return Math.sqrt(dx * dx + dy * dy);
 				}
 				ctx.GetActors = function() {
 					AIDriver.exec("status = MyState", isHoAI);
@@ -272554,7 +272554,7 @@ var init_AIDriver = __esmMin((() => {
 					if (res.length > 3) {
 						if (isHoAI ? AIDriver.HOM_AGGRESSIVE : AIDriver.MER_AGGRESSIVE) {
 							let closest = 0;
-							let lastDist = 1e3;
+							let lastDist = Math.sqrt(1e3);
 							const thisentity = EntityManager.get(isHoAI ? SessionStorage_default.homunId : SessionStorage_default.mercId);
 							for (const item of res) if (item !== 0 && item !== SessionStorage_default.AID && item !== SessionStorage_default.homunId && item !== SessionStorage_default.mercId) {
 								const entity = EntityManager.get(item);
@@ -272595,8 +272595,7 @@ var init_AIDriver = __esmMin((() => {
 						if (!homun || !target) return 0;
 						const range = SkillInfo[skillId].AttackRange[level - 1] + 1 || homun.attack_range || 1;
 						if (homun.position[0] > 0 && homun.position[1] > 0 && target.position[0] > 0 && target.position[1] > 0) {
-							const dist = distance(homun.position[0], homun.position[1], target.position[0], target.position[1]);
-							if (range * range >= dist) {
+							if (range >= distance(homun.position[0], homun.position[1], target.position[0], target.position[1])) {
 								if (homun && [
 									0,
 									1,
