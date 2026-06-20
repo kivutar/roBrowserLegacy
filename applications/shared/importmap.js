@@ -15,6 +15,7 @@
 			jquery: projectRoot + 'src/Vendors/jquery-1.9.1.js',
 			bson: projectRoot + 'node_modules/bson/lib/bson.mjs',
 			lodash: projectRoot + 'node_modules/lodash-es/lodash.default.js',
+			'rijndael-js': projectRoot + 'applications/electron/vendor/rijndael-js.js',
 			'src/': projectRoot + 'src/',
 			'App/': projectRoot + 'src/App/',
 			'Audio/': projectRoot + 'src/Audio/',

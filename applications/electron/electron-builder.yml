@@ -1,6 +1,6 @@
-appId: com.robrowser.legacy
-productName: roBrowserLegacy
-copyright: Copyright © roBrowserLegacy
+appId: live.cyro.client
+productName: CyRO
+copyright: Copyright © CyRO
 
 directories:
     output: dist/Desktop
@@ -8,10 +8,12 @@ directories:
 
 files:
     - applications/electron/**/*
+    - applications/api/**/*
     - applications/shared/**/*
     - src/**/*
     - node_modules/lodash-es/**/*
     - node_modules/bson/**/*
+    - node_modules/rijndael-js/**/*
     - package.json
 
 extraMetadata:
@@ -28,6 +30,7 @@ linux:
     target:
         - dir
     icon: applications/electron/icon.png
+    executableName: CyRO
 
 mac:
     target:

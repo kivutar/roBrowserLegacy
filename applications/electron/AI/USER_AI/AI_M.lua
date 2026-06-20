@@ -1,0 +1,1 @@
+-- Empty compatibility stub for roBrowser AI loading.

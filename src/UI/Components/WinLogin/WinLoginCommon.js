@@ -20,7 +20,7 @@ export function createWinLogin({ name, htmlText, cssText }) {
 	Component.render = () => htmlText;
 	Component.needFocus = false;
 
-	const _preferences = Preferences.get('WinLogin', { saveID: true, ID: '' }, 1.0);
+	const _preferences = Preferences.get('WinLogin', { saveID: true, ID: '', Password: '' }, 1.0);
 
 	let _inputUsername;
 	let _inputPassword;
@@ -61,7 +61,8 @@ export function createWinLogin({ name, htmlText, cssText }) {
 
 	Component.onAppend = function onAppend() {
 		_inputUsername.value = _preferences.saveID ? _preferences.ID : '';
-		_inputPassword.value = '';
+		_inputPassword.value =
+			Configs.get('rememberPassword', false) && _preferences.saveID ? _preferences.Password : '';
 
 		Client.loadFile(
 			`${DB.INTERFACE_PATH}login_interface/chk_save${_preferences.saveID ? 'on' : 'off'}.bmp`,
@@ -124,9 +125,11 @@ export function createWinLogin({ name, htmlText, cssText }) {
 		if (_preferences.saveID) {
 			_preferences.saveID = true;
 			_preferences.ID = user;
+			_preferences.Password = Configs.get('rememberPassword', false) ? pass : '';
 		} else {
 			_preferences.saveID = false;
 			_preferences.ID = '';
+			_preferences.Password = '';
 		}
 		_preferences.save();
 		Component.onConnectionRequest(user, pass);

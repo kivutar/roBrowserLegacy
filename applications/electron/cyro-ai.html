@@ -1,0 +1,169 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>CyRO</title>
+		<link rel="icon" type="image/png" href="icon.png" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<style>
+			html,
+			body,
+			#robrowser {
+				margin: 0;
+				padding: 0;
+				width: 100%;
+				height: 100%;
+				overflow: hidden;
+			}
+
+			body {
+				background: #05070c;
+			}
+		</style>
+		<script src="../api/api.js"></script>
+		<script>
+			function stringifyLogArg(arg) {
+				if (arg instanceof Error) {
+					return arg.stack || arg.message;
+				}
+				if (typeof arg === 'string') {
+					return arg;
+				}
+				try {
+					return JSON.stringify(arg);
+				} catch (_error) {
+					return String(arg);
+				}
+			}
+
+			function installClientLogForwarder(ro) {
+				function shouldForward(level, text) {
+					if (level === 'error') {
+						return true;
+					}
+					return /(\[AI\]|AIDriver|HOAI|MERAI|AI\/|AI\\|Loading Default|Loading Custom|Unable to|prepareAIFiles|\[require\]|unhandledrejection|TraceAI|CHAI|chai|homun_skill_cast|Caprice|HVAN|custom homun AI)/i.test(
+						text
+					);
+				}
+
+				var attempts = 0;
+				var timer = window.setInterval(function () {
+					attempts += 1;
+					var app = ro && ro._APP;
+					if (!app || !app.console || app.__cyroLogForwarderInstalled) {
+						if (attempts > 200 || (app && app.__cyroLogForwarderInstalled)) {
+							window.clearInterval(timer);
+						}
+						return;
+					}
+
+					app.__cyroLogForwarderInstalled = true;
+					['debug', 'log', 'info', 'warn', 'error'].forEach(function (level) {
+						var original = app.console[level] || app.console.log;
+						app.console[level] = function () {
+							var args = Array.prototype.slice.call(arguments);
+							var text = args.map(stringifyLogArg).join(' ');
+							if (shouldForward(level, text)) {
+								console.warn('[roclient:' + level + '] ' + text);
+							}
+							return original.apply(app.console, args);
+						};
+					});
+					app.addEventListener('error', function (event) {
+						console.warn(
+							'[roclient:error-event] ' +
+								[
+									event.message,
+									event.filename,
+									event.lineno,
+									event.colno,
+									event.error && (event.error.stack || event.error.message)
+								]
+									.filter(Boolean)
+									.join(' ')
+						);
+					});
+					app.addEventListener('unhandledrejection', function (event) {
+						console.warn('[roclient:unhandledrejection] ' + stringifyLogArg(event.reason));
+					});
+					console.warn('[roclient:forwarder] installed');
+					window.clearInterval(timer);
+				}, 100);
+			}
+
+			function initialize() {
+				var ROConfig = {
+					target: document.getElementById('robrowser'),
+					type: ROBrowser.TYPE.FRAME,
+					application: ROBrowser.APP.ONLINE,
+					width: '100%',
+					height: '100%',
+					version: 1775350421,
+					development: true,
+					debugAI: true,
+					forceHomunCustomAI: true,
+					forceHomunAggressiveAI: false,
+					enableConsole: true,
+					disableConsole: false,
+					remoteClient: window.location.origin + '/cyro-grf/',
+					registrationweb: 'https://cyro.live/?module=account&action=create',
+					webserverAddress: window.location.origin,
+					socketProxy: 'wss://cyro.live/ws/',
+					servers: [
+						{
+							display: 'CyRO',
+							desc: 'Play in RO in Browser',
+							address: '127.0.0.1',
+							port: 6900,
+							version: 55,
+							langtype: 240,
+							packetver: 20211103,
+							renewal: false,
+							packetKeys: false,
+							adminList: [2000000]
+						}
+					],
+					packetDump: false,
+					rememberPassword: true,
+					skipServerList: true,
+					skipIntro: true,
+					aura: {},
+					autoLogin: [],
+					BGMFileExtension: ['mp3'],
+					calculateHash: false,
+					CameraMaxZoomOut: 5,
+					charBlockSize: 0,
+					clientHash: null,
+					clientVersionMode: 'PacketVer',
+					enableBank: true,
+					enableCashShop: true,
+					enableCheckAttendance: true,
+					enableDmgSuffix: true,
+					enableHomunAutoFeed: true,
+					enableMapName: true,
+					enableRoulette: false,
+					FirstPersonCamera: false,
+					grfList: [],
+					hashFiles: [],
+					loadLua: false,
+					customItemInfo: [],
+					onReady: null,
+					plugins: {},
+					saveFiles: true,
+					ThirdPersonCamera: false,
+					transitionDuration: 500,
+					restoreChatFocus: false
+				};
+				var RO = new ROBrowser(ROConfig);
+				window.CyroRO = RO;
+				RO.start();
+				installClientLogForwarder(RO);
+			}
+
+			window.addEventListener('load', initialize, false);
+		</script>
+	</head>
+	<body>
+		<div id="robrowser">Initializing roBrowser...</div>
+	</body>
+</html>

@@ -3,7 +3,7 @@ import { contextBridge } from 'electron';
 import net from 'node:net';
 
 contextBridge.exposeInMainWorld('electronAPI', {
-	isElectron: true,
+	isElectron: false,
 
 	// ─── TCP Socket ─────────────────────────────────────────
 	createSocket(host, port) {

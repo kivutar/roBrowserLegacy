@@ -71,6 +71,10 @@ class AIDriver {
 				end  
 				return result  
 			end
+			function chaiGetMsg(id)
+				local res = GetMsg(id)
+				return res[1] or 0, res[2] or 0, res[3] or 0
+			end
 		`);
 
 			// Hooks default lua logging
@@ -339,7 +343,7 @@ class AIDriver {
 								}
 								pkt.SKID = skillId;
 								pkt.selectedLevel = level;
-								pkt.targetID = targetID || Session.Entity.GID;
+								pkt.targetID = Number(targetID) || Session.Entity.GID;
 								Network.sendPacket(pkt);
 							}
 						}

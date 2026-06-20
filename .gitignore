@@ -18,6 +18,7 @@ Config.local.js
 /ThreadEventHandler.js
 /data/*
 /save/*
+/.cache/
 
 # IDE files
 .idea/

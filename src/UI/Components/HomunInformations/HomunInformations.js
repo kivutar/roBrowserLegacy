@@ -536,6 +536,9 @@ HomunInformations.toggleAggressive = function toggleAggressive() {
 
 HomunInformations.startAI = function startAI() {
 	if (!this.AILoop) {
+		if (Configs.get('forceHomunCustomAI', false)) {
+			Session.homCustomAI = true;
+		}
 		AIDriver.reset();
 		this.AILoop = setInterval(() => {
 			if (Session.homunId) {
